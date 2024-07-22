@@ -10,39 +10,10 @@
   <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
   <!-- xmind插件stylesheet -->
   <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/AntHubTC/docsify-xmind@1.0/example/dist/index.min.css" />
-  <style>
-    #app {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background-color: #f0f0f0;
-    }
-
-    .loader {
-      border: 16px solid #f3f3f3;
-      border-top: 16px solid #3498db;
-      border-radius: 50%;
-      width: 120px;
-      height: 120px;
-      animation: spin 2s linear infinite;
-    }
-
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg);
-      }
-      100% {
-        transform: rotate(360deg);
-      }
-    }
-  </style>
 </head>
 
 <body>
-  <div id="app">
-    <div class="loader"></div>
-  </div>
+  <div id="app">Loading...💕</div>
   <script>
     window.$docsify = {
       name: '',
@@ -50,7 +21,7 @@
       mergeNavbar: true,
       loadSidebar: true,
       auto2top: true,
-      subMaxLevel: 180,
+      subMaxLevel: 4,
       // loadNavbar: true,
       // loadNavbar: 'nav.md',
       repo: 'https://github.com/PUPPET17',
@@ -80,7 +51,6 @@
       },
       markdown: {
         renderer: {
-
           code: function (code, lang) {
             if (lang === 'drawio') {
               if (window.drawioConverter) {
@@ -95,14 +65,26 @@
           }
         }
       },
+      pagination: {
+        previousText: 'Previous',
+        nextText: 'Next',
+        crossChapter: true,
+        crossChapterText: true,
+      },
+      search: {
+        maxAge: 86400000, // Expiration time, the default one day
+        paths: 'auto', 
+        placeholder: 'Type to search',
+        noData: 'No Results!',
+        depth: 6,
+        hideOtherSidebarContent: false,
+      },
     }
   </script>
   <!-- Docsify v4 -->
   <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
   <!-- 搜索插件 -->
   <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
-  <!-- 复制代码插件s -->
-  <script src="//cdn.jsdelivr.net/npm/docsify-copy-code/dist/docsify-copy-code.min.js"></script>
   <!-- 字数统计插件 -->
   <script src="https://cdn.jsdelivr.net/npm/docsify-count@latest/dist/countable.min.js"></script>
   <!-- xmind插件 -->
@@ -112,6 +94,10 @@
   <!-- drawio插件 -->
   <script src="https://cdn.jsdelivr.net/npm/docsify-drawio/viewer.min.js"></script>
   <script src='https://cdn.jsdelivr.net/npm/docsify-drawio/drawio.js'></script>
+  <!-- 终端-alike插件 -->
+  <script src="https://cdn.jsdelivr.net/npm/docsify-terminal-block@1.0.3"></script>
+  <!-- 分页插件 -->
+  <script src="//unpkg.com/docsify-pagination/dist/docsify-pagination.min.js"></script>
 
 </body>
 
