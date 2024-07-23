@@ -1,5 +1,6 @@
-# PUNOTE  
+
 MAINTAINED by [PUPPET17](https://github.com/puppet17)
+<iframe src="./iframs/typing.html" width="10%" height="60px" border: none scrolling="no"></iframe>
 <div style="background: #f7f7f7; color: #333; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
     <div style="flex: 1; display: flex; flex-direction: column; align-items: stretch;">
       <!-- Frameworks and Tools Section -->
