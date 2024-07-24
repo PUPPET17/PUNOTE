@@ -7,7 +7,7 @@
         /* 定义容器的大小 */
         #container {
             width: 800px;
-            height: 600px;
+            height: 300px;
             position: absolute;
             top: 50%;
             left: 50%;
@@ -31,7 +31,7 @@
         renderer.setSize(800, 600);
         document.getElementById('container').appendChild(renderer.domElement);
 
-        var geometry = new THREE.BoxGeometry(0.9,0.9,0.9);
+        var geometry = new THREE.BoxGeometry(0.5,0.5,0.5);
         var material = new THREE.MeshBasicMaterial({color: 0x666699});
         var cube = new THREE.Mesh(geometry, material);
         scene.add( cube );
@@ -41,7 +41,7 @@
         var wireframe = new THREE.LineSegments(edges, lineMaterial);
         cube.add( wireframe );
 
-        var geometry2 = new THREE.BoxGeometry(1.3,1.3,1.3);
+        var geometry2 = new THREE.BoxGeometry(0.7,0.7,0.7);
         var wireframe2 = new THREE.WireframeGeometry( geometry2 );
         var line = new THREE.LineSegments( wireframe2,lineMaterial );
         line.material.depthTest = true;
@@ -49,6 +49,7 @@
         cube.add( line );
 
         camera.position.z = 5;
+        camera.position.y =-0.6 ;
 
         // Mouse position
         var mouse = new THREE.Vector2();
