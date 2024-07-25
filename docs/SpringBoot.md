@@ -3,7 +3,7 @@
 ## Maven 插件
 
 - maven 打 jar 包找不到主类
-  ```terminals
+  ```terminal
       <build>
         <plugins>
             <plugin>
