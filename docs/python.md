@@ -127,3 +127,19 @@
         redis_client.set(key, value)
         print("JSON数据已存入Redis的Hash中。")
     ```
+
+
+
+## pip 使用镜像下载
+- 清华源
+```terminal
+    >|pip install <package_name> -i https://pypi.tuna.tsinghua.edu.cn/simple
+```
+- 阿里源
+```terminal
+    >|pip install <package_name> -i https://pypi.tuna.tsinghua.edu.cn/simple
+```
+- 中科大
+```terminal
+    >|pip install <package_name> -i https://pypi.mirrors.ustc.edu.cn/simple/
+```

@@ -76,6 +76,21 @@
      })
      ```
 
+## 部署 minio
+
+- 拉取镜像：
+  ```
+  docker pull minio/minio
+  ```
+- 创建数据目录：
+  ```
+  mkdir -p /etc/docker/minio/data
+  ```
+- 启动容器：
+  ```
+  docker run -p 5555:9000 -p 5554:9001 --name minio -d --restart=always -e "MINIO_ACCESS_KEY=minioadmin" -e "MINIO_SECRET_KEY=minioadmin" -v /etc/docker/minio/data:/data minio/minio server /data --console-address ":9001" -address ":9000"
+  ```
+
 ## Docker Compose
 - `docker-compose up`
   - 启动 Docker Compose 服务。
