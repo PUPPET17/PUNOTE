@@ -40,7 +40,7 @@
 - 上传 redis.conf 到 /data/redis 文件夹下    
 - 启动容器
   ```terminal
-  >|docker run -p 6379:6379 --name redis -v /data/redis/redis.conf:/etc/redis/redis.conf -v /data/redis/data:/data -d redis redis-server /etc/redis/redis.conf --appendonly yes --restart always
+  >|docker run -p 6379:6379 --name redis -v /data/redis/redis.conf:/etc/redis/redis.conf -v /data/redis/data:/data --restart always -d redis redis-server /etc/redis/redis.conf --appendonly yes
   ```
 
 ## 部署 MongoDB
@@ -90,7 +90,92 @@
   ```
   docker run -p 5555:9000 -p 5554:9001 --name minio -d --restart=always -e "MINIO_ACCESS_KEY=minioadmin" -e "MINIO_SECRET_KEY=minioadmin" -v /etc/docker/minio/data:/data minio/minio server /data --console-address ":9001" -address ":9000"
   ```
+1. 拉取镜像
+docker pull minio/minio
+2. 启动实例
+docker run --name minio -d -p 9000:9000 -p 9090:9090 minio/minio server /data --console-address ":9090" --address ":9000"
+参数说明：
 
+- */data*  数据目录，必选参数
+
+- *--console-address*  控制台端口，用于Web管理，默认为随机端口
+
+- *--address*  S3-API端口，用于API对接，默认为9000 
+通过浏览器访问http://<ip>:9090，即可访问MinIO的Web管理界面，输入默认凭证`minioadmin/minioadmin`即可进入管理页面。 进入`Administrator/Buckets`页面，点击“Create Bucket”菜单，输入Bucket Name创建桶。
+进入`User/Object Browser`页面，点击列表中的桶，可以浏览、上传文件。此时，上传的文件还无法在外部站点或笔记软件中访问。浏览器访问`http://<ip>:9000/blog/1.png`，会提示Access Denied。进入桶管理，配置匿名访问规则。Prefix输入 /，Access选择 readonly。保存后，再次访问`http://<ip>:9000/blog/1.png`可以看到图片了。 1. 持久化
+由于服务运行在Docker中，需要将数据目录挂载到本地，另外服务启动时会在容器创建/root/.minio目录，也需要挂载到本地。
+
+mkdir -p /opt/minio/{data,.minio}
+
+docker run --name minio -d \
+  -p 9000:9000 -p 9090:9090 \
+  -v /opt/minio/data:/data \
+  -v /opt/minio/.minio:/root/.minio \
+  minio/minio server /data --console-address ":9090" --address ":9000"
+
+
+2. 指定登录凭证
+docker run --name minio -d \
+  -p 9000:9000 -p 9090:9090
+  -e MINIO_ROOT_USER=admin \
+  -e MINIO_ROOT_PASSWORD=admin... \
+  -v /opt/minio/data:/data \
+  -v /opt/minio/.minio:/root/.minio \
+  minio/minio server /data --console-address ":9090" --address ":9000"
+3. Nginx配置域名访问
+如果你拥有一个域名，希望通过域名访问MinIO服务，可以通过Nginx配置反向代理。
+
+例如，通过`http://oss.example.net/ui`访问管理页面，并通过`http://oss.example.net/blog/1.png`预览图片。
+
+## 配置管理页面地址  http://oss.example.net
+server {
+    listen 80;
+    server_name oss.example.net;
+
+    location / {
+        proxy_set_header  Host $http_host; # 防止上传时提示SignatureDoesNotMatch错误
+        proxy_connect_timeout 300;
+        proxy_http_version 1.1;
+        proxy_pass http://localhost:9000;
+    }
+
+    location /ui/ {
+        rewrite ^/ui/(.*) /$1 break;
+        # 添加websocket支持（防止桶浏览页面一直loading）
+        proxy_http_version 1.1;
+        proxy_connect_timeout 300;
+        proxy_set_header  Upgrade $http_upgrade;
+        proxy_set_header  Connection "upgrade";
+        proxy_next_upstream  http_500 http_502 http_503 http_504 error timeout invalid_header;
+        proxy_set_header  Host $http_host;
+        proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://localhost:9090;
+    }
+}
+
+
+同时，需要在启动MinIO服务时指定环境变量`MINIO_BROWSER_REDIRECT_URL=http://oss.example.net/ui`
+
+使用docker compose启停服务
+编辑docker-compose.yml
+
+version: '3'
+services:
+  minio:
+    image: minio/minio:latest
+    ports:
+      - "9001:9001"
+      - "9090:9090"
+    volumes:
+      - "/Users/mlamp/minio/data:/data"
+      - "/Users/mlamp/minio/.minio:/root/.minio"
+    environment:
+      - "MINIO_ROOT_USER=admin"
+      - "MINIO_ROOT_PASSWORD=admin..."
+      - "MINIO_BROWSER_REDIRECT_URL=http://oss.example.net/ui"
+    command: server /data --console-address ":9090" --address ":9000"
+    restart: always
+使用`docker-compose up -d`启动服务
 ## Docker Compose
 - `docker-compose up`
   - 启动 Docker Compose 服务。
