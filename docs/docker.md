@@ -92,25 +92,27 @@
   ```
 
 使用docker compose启停服务
-编辑docker-compose.yml
-
-version: '3'
-services:
-  minio:
-    image: minio/minio:latest
-    ports:
-      - "9001:9001"
-      - "9090:9090"
-    volumes:
-      - "/Users/mlamp/minio/data:/data"
-      - "/Users/mlamp/minio/.minio:/root/.minio"
-    environment:
-      - "MINIO_ROOT_USER=admin"
-      - "MINIO_ROOT_PASSWORD=admin..."
-      - "MINIO_BROWSER_REDIRECT_URL=http://oss.example.net/ui"
-    command: server /data --console-address ":9090" --address ":9000"
-    restart: always
-使用`docker-compose up -d`启动服务
+  - 编辑docker-compose.yml
+  ```terminal
+  version: '3'
+  services:
+    minio:
+      image: minio/minio:latest
+      ports:
+        - "9001:9001"
+        - "9090:9090"
+      volumes:
+        - "/Users/mlamp/minio/data:/data"
+        - "/Users/mlamp/minio/.minio:/root/.minio"
+      environment:
+        - "MINIO_ROOT_USER=admin"
+        - "MINIO_ROOT_PASSWORD=admin..."
+        - "MINIO_BROWSER_REDIRECT_URL=http://oss.example.net/ui"
+      command: server /data --console-address ":9090" --address ":9000"
+      restart: always
+  ```
+  - 使用`docker-compose up -d`启动服务
+  
 ## Docker Compose
 - `docker-compose up`
   - 启动 Docker Compose 服务。
