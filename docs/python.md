@@ -2,7 +2,7 @@
 
 ## 打印项目结构
 - 代码
-```python
+```terminal
     import os
     def list_files(startpath):
         output = []
@@ -32,7 +32,7 @@
   ![image.png](https://ossk.cc/file/17f6727de90a378c36198.png ':zoom')
 
 ## 使用 ffmpeg 从 `.mfv` 中提取音频
-
+```terminal
     import subprocess
     def extract_audio(input_file, output_file):
         try:
@@ -45,9 +45,10 @@
     output_file = r'C:\Users\10023\Videos\output_audio.mp3'
     """ 调用函数提取音频 """
     extract_audio(input_file, output_file)
+```
 
 ## `.mp3`转`.pcm`
-
+```terminal
     from pydub import AudioSegment
 
     def mp3_to_pcm(input_mp3, output_pcm):
@@ -58,9 +59,10 @@
     input_mp3_file = "./audio/input.mp3"
     output_pcm_file = "./audio/output.pcm"
     mp3_to_pcm(input_mp3_file, output_pcm_file)
+```
 
 ## `.pcm`转`.silk`
-
+```terminal
     import os, pilk
     from pydub import AudioSegment
     def convert_to_silk(media_path: str) -> str:
@@ -79,8 +81,9 @@
         print(f"转换完成！生成的 Silk 文件路径为: {silk_file_path}")
     if __name__ == "__main__":
         main()
+```
 ## `.wav`转`.mp3`
-
+```terminal
     from pydub import AudioSegment
     def wav_to_mp3(input_wav, output_mp3):
         # Load the WAV file
@@ -90,6 +93,51 @@
     input_wav_file = "./audio/input.wav"
     output_mp3_file = "./audio/output.mp3"
     wav_to_mp3(input_wav_file, output_mp3_file)
+```
+## 标注格式`pascal`转`yolo`
+```terminal
+import os
+import xml.etree.ElementTree as ET
+classes = ["cat", "dog"]
+def convert_box(size, box):
+    dw = 1. / size[0]
+    dh = 1. / size[1]
+    x = (box[0] + box[1]) / 2.0 - 1
+    y = (box[2] + box[3]) / 2.0 - 1
+    w = box[1] - box[0]
+    h = box[3] - box[2]
+    return (x * dw, y * dh, w * dw, h * dh)
+def convert_annotation(xml_file, output_txt_file):
+    tree = ET.parse(xml_file)
+    root = tree.getroot()
+    size = root.find('size')
+    w = int(size.find('width').text)
+    h = int(size.find('height').text)
+
+    with open(output_txt_file, 'w') as out_file:
+        for obj in root.iter('object'):
+            difficult = obj.find('difficult').text
+            cls = obj.find('name').text
+            if cls not in classes or int(difficult) == 1:
+                continue
+            cls_id = classes.index(cls)
+            xmlbox = obj.find('bndbox')
+            b = (float(xmlbox.find('xmin').text), float(xmlbox.find('xmax').text), 
+                 float(xmlbox.find('ymin').text), float(xmlbox.find('ymax').text))
+            bbox = convert_box((w, h), b)
+            out_file.write(f"{cls_id} {' '.join([str(a) for a in bbox])}\n")
+def convert_dataset(xml_folder, output_folder):
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
+    for xml_file in os.listdir(xml_folder):
+        if xml_file.endswith(".xml"):
+            xml_path = os.path.join(xml_folder, xml_file)
+            output_txt_file = os.path.join(output_folder, xml_file.replace(".xml", ".txt"))
+            convert_annotation(xml_path, output_txt_file)
+xml_folder = r"C:\Users\10023\Downloads\archive\annotations"
+output_folder = r"C:\Users\10023\Downloads\archive\labels"
+convert_dataset(xml_folder, output_folder)
+```
 
 ## 使用 python 操作 Redis
 - 代码

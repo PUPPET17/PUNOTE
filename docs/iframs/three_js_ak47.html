@@ -8,8 +8,6 @@
         body {
             margin: 0;
         }
-
-        /* 定义容器的大小 */
         #container {
             width: 800px;
             height: 494.4px;
@@ -17,8 +15,8 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            border-radius: 30px; /* 添加圆角 */
-            overflow: hidden; /* 防止边缘部分溢出 */
+            border-radius: 30px; 
+            overflow: hidden;
         }
     </style>
 </head>
@@ -31,22 +29,15 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.140.2/examples/js/loaders/RGBELoader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.140.2/examples/js/loaders/TGALoader.js"></script>
     <script>
-
-        // 创建场景
         const scene = new THREE.Scene();
-
-        // 创建相机
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         camera.position.set(-20, 7, 30);
-
-        // 创建渲染器
         const renderer = new THREE.WebGLRenderer();
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.toneMapping = THREE.ACESFilmicToneMapping;
         renderer.toneMappingExposure = 1;
         document.getElementById('container').appendChild(renderer.domElement);
 
-        // 添加光源
         const light = new THREE.PointLight(0xffffff);
         light.position.set(10, 10, 10);
         const light3 = new THREE.PointLight(0xffffff);
@@ -59,47 +50,33 @@
         scene.add(light3);
         scene.add(light4);
         scene.add(light5);
-        const light2 = new THREE.AmbientLight(0xffffff); // 柔和的白光
+        const light2 = new THREE.AmbientLight(0xffffff);
         scene.add(light2);
-
-        // 创建OrbitControls实例
         const controls = new THREE.OrbitControls(camera, renderer.domElement);
-
-        // 设置控件参数（可选）
         controls.enableDamping = true; // 启用阻尼效果
         controls.dampingFactor = 0.25; // 阻尼系数
         controls.enableZoom = true; // 允许缩放
 
-        // 创建OBJ加载器
         const loader = new THREE.OBJLoader();
 
-        // 创建TGA纹理加载器
         const tgaLoader = new THREE.TGALoader();
-        const texture = tgaLoader.load('../objs/textures/ak-47.tga'); // 替换为你的TGA纹理路径
+        const texture = tgaLoader.load('../objs/textures/ak-47.tga');
 
-        let objModel; // 变量用于存储加载的OBJ模型
+        let objModel; 
 
-        // 加载OBJ文件
         loader.load(
             '../objs/weapon_rif_ak47.obj',
             function (object) {
-                // 加载成功后的回调
                 objModel = object;
                 
-                // 计算包围盒
                 const box = new THREE.Box3().setFromObject(objModel);
                 const center = box.getCenter(new THREE.Vector3());
                 const size = box.getSize(new THREE.Vector3());
-                
-                // 将模型居中
                 objModel.position.sub(center);
-
-                // 可选：缩放模型使其适合当前场景
                 const maxDim = Math.max(size.x, size.y, size.z);
-                const scale = 35 / maxDim; // 比如缩放到最大尺寸为10
+                const scale = 35 / maxDim; 
                 objModel.scale.set(scale, scale, scale);
 
-                // 遍历模型的子对象并应用纹理
                 objModel.traverse(function (child) {
                     if (child.isMesh) {
                         child.material.map = texture;
@@ -110,11 +87,9 @@
                 scene.add(objModel);
             },
             function (xhr) {
-                // 加载进度回调
                 console.log((xhr.loaded / xhr.total * 100) + '% loaded');
             },
             function (error) {
-                // 加载错误回调
                 console.log('An error happened');
             }
         );
@@ -123,8 +98,6 @@
         const rgbeLoader = new THREE.RGBELoader();
         rgbeLoader.load('../objs/textures/rosendal_park_sunset_puresky_4k.hdr', function (texture) {
             texture.mapping = THREE.EquirectangularReflectionMapping;
-
-            // 使用PMREMGenerator处理HDR环境贴图
             const pmremGenerator = new THREE.PMREMGenerator(renderer);
             pmremGenerator.compileEquirectangularShader(texture);
 
@@ -139,12 +112,9 @@
 
         function animate() {
             requestAnimationFrame(animate);
-
-            // 自旋逻辑
             if (objModel) {
-                objModel.rotation.y += 0.01; // 每帧绕Y轴旋转0.01弧度
+                objModel.rotation.y += 0.01;
             }
-
             controls.update();
             renderer.render(scene, camera);
         }
