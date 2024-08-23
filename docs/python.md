@@ -2,7 +2,7 @@
 
 ## 打印项目结构
 - 代码
-```terminal
+```python
     import os
     def list_files(startpath):
         output = []
@@ -32,7 +32,7 @@
   ![image.png](https://ossk.cc/file/17f6727de90a378c36198.png ':zoom')
 
 ## 使用 ffmpeg 从 `.mfv` 中提取音频
-```terminal
+```python
     import subprocess
     def extract_audio(input_file, output_file):
         try:
@@ -48,7 +48,7 @@
 ```
 
 ## `.mp3`转`.pcm`
-```terminal
+```python
     from pydub import AudioSegment
 
     def mp3_to_pcm(input_mp3, output_pcm):
@@ -62,7 +62,7 @@
 ```
 
 ## `.pcm`转`.silk`
-```terminal
+```python
     import os, pilk
     from pydub import AudioSegment
     def convert_to_silk(media_path: str) -> str:
@@ -83,7 +83,7 @@
         main()
 ```
 ## `.wav`转`.mp3`
-```terminal
+```python
     from pydub import AudioSegment
     def wav_to_mp3(input_wav, output_mp3):
         # Load the WAV file
@@ -95,7 +95,7 @@
     wav_to_mp3(input_wav_file, output_mp3_file)
 ```
 ## 标注格式`pascal`转`yolo`
-```terminal
+```python
 import os
 import xml.etree.ElementTree as ET
 classes = ["cat", "dog"]
@@ -141,7 +141,7 @@ convert_dataset(xml_folder, output_folder)
 
 ## 使用 python 操作 Redis
 - 代码
-    ```terminal
+    ```python
     import json
     import redis
 
@@ -180,14 +180,14 @@ convert_dataset(xml_folder, output_folder)
 
 ## pip 使用镜像下载
 - 清华源
-```terminal
+```python
     >|pip install <package_name> -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
 - 阿里源
-```terminal
+```python
     >|pip install <package_name> -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
 - 中科大
-```terminal
+```python
     >|pip install <package_name> -i https://pypi.mirrors.ustc.edu.cn/simple/
 ```

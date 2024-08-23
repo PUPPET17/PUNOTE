@@ -1,9 +1,9 @@
 # SpringBoot
 
-## Maven 插件
+#### Maven 插件
 
 - maven 打 jar 包找不到主类
-  ```terminal
+  ```xml
       <build>
         <plugins>
             <plugin>
@@ -25,25 +25,25 @@
     </build>
   ```
 - maven 打包跳过测试
-  ```terminal
-  <plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-surefire-plugin</artifactId>
-    <version>2.6</version>
-    <configuration>
-        <skipTests>true</skipTests>
-        <testFailureIgnore>false</testFailureIgnore>
-            <includes>
-                <include>**/*Test.java</include>
-            </includes>
-        </configuration>
-  </plugin>
+  ```xml
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-surefire-plugin</artifactId>
+      <version>2.6</version>
+      <configuration>
+          <skipTests>true</skipTests>
+          <testFailureIgnore>false</testFailureIgnore>
+              <includes>
+                  <include>**/*Test.java</include>
+              </includes>
+          </configuration>
+    </plugin>
   ```
 
-## 依赖重复导入导致冲突
+#### 依赖重复导入导致冲突
 - 使用 `mvn dependency:tree` 命令来查看依赖树
 - 找到冲突后添加 `<exclusions>` 标签将不想要的依赖从包中排除单独导入，比如：
-  ```terminal
+  ```xml
         <dependency>
             <groupId>com.tencentcloudapi</groupId>
             <artifactId>tencentcloud-sdk-java</artifactId>
@@ -62,7 +62,7 @@
         </dependency>
   ```
 - 还可以使用 `<dependencyManagement>` 标签来统一指定版本号
-  ```terminal
+  ```xml
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -73,12 +73,12 @@
         </dependencies>
     </dependencyManagement>
   ```
-## 分布式ID
- ### 雪花算法
+#### 分布式ID
+ ##### 雪花算法
 
-    雪花算法（Snowflake Algorithm）是由 Twitter 开发的分布式唯一 ID 生成算法。它的设计目标是生成全局唯一且有序的 ID，这对于分布式系统中的数据一致性和数据库分片等场景非常重要。以下是雪花算法的详细介绍：
+  -  雪花算法（Snowflake Algorithm）是由 Twitter 开发的分布式唯一 ID 生成算法。它的设计目标是生成全局唯一且有序的 ID，这对于分布式系统中的数据一致性和数据库分片等场景非常重要。以下是雪花算法的详细介绍：
 
-  #### 1. 组成
+  ###### 1. 组成
 
     雪花算法生成的 ID 通常是一个 64 位的整数，具体组成如下：
 
@@ -88,7 +88,7 @@
     - **机器 ID（5 位）**: 表示机器的 ID，用于区分同一数据中心中的不同机器。可以支持最多 32 台机器。
     - **序列号（12 位）**: 表示同一毫秒内生成的 ID 的序列号，解决同一时间戳下生成多个 ID 的冲突问题。同一毫秒内生成最多 4096 个不同 ID。
 
-  #### 2. 算法原理
+  ###### 2. 算法原理
 
     雪花算法的生成过程如下：
 
@@ -99,7 +99,7 @@
        - 序列号部分：在同一时间戳下，序列号递增以确保唯一性。
     3. **处理溢出**: 如果在同一毫秒内生成了超过 4096 个 ID，则需要等待下一毫秒。
 
-  #### 3. 优缺点
+  ###### 3. 优缺点
 
     - 优点：
 
@@ -113,7 +113,7 @@
       - **时间戳限制**: 时间戳部分的长度限制了 ID 的有效时间跨度（约 69 年）。
       - **配置复杂性**: 需要合理配置数据中心 ID 和机器 ID，确保在分布式系统中唯一性。
   
-  #### 4. 时间回溯
+  ###### 4. 时间回溯
     时间回退: 如果服务器的系统时钟发生了回退（比如因为网络时间协议（NTP）校准或者手动调整时间），可能导致在同一毫秒内生成多个相同时间戳的 ID。在这种情况下，雪花算法会生成重复的 ID，因为它依赖于时间戳来确保唯一性。
 
     - 解决策略:
@@ -127,3 +127,35 @@
       - 等待和重试: 如果检测到时间回退，系统可以选择等待一段时间，并重试 ID 生成，直到时间回到正常范围。
       - 增加序列号: 在同一毫秒内，使用更多的序列号位数来进一步确保唯一性。
       - 日志记录: 记录生成的 ID 和时间戳，以便在出现重复时进行日志分析和问题追踪。
+
+  ###### 5. 依赖包和使用
+  - 引入依赖包：
+  ```xml
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>5.5.0</version>
+        </dependency>
+  ```
+  - 使用：
+  ```java
+  @Component
+  public class SnowFlake {
+      private Snowflake snowflake;
+      @PostConstruct
+      public void init() {
+          long workerId;
+          try {
+              workerId = NetUtil.ipv4ToLong(NetUtil.getLocalhostStr());
+          } catch (Exception e) {
+              workerId = NetUtil.getLocalhostStr().hashCode();
+          }
+          workerId = workerId >> 16 & 31;
+          long dataCenterId = 1L;
+          snowflake = IdUtil.createSnowflake(workerId, dataCenterId);
+      }
+      public synchronized long nextId() {
+          return snowflake.nextId();
+      }
+  }
+  ```

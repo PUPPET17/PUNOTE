@@ -14,7 +14,7 @@
     | fail     | Function | 否   | 接口调用失败的回调函数                           |
     | complete | Function | 否   | 接口调用结束的回调函数（调用成功、失败都会执行） |
 
-    ```terminal
+    ```javascript
         uni.setStorage({
           key: 'storage_key',
           data: 'hello',
@@ -30,7 +30,7 @@
     |--------|--------|------|----------------------------------------------------------------------|
     | key    | String | 是   | 本地缓存中的指定的 key                                               |
     | data   | Any    | 是   | 需要存储的内容，只支持原生类型、及能够通过 JSON.stringify 序列化的对象 |
-    ```terminal
+    ```javascript
         try {
           uni.setStorageSync('storage_key', 'hello');
         } catch (e) {
@@ -39,15 +39,15 @@
     ```
 - ### axios 二次封装
   - 使用 uniapp-axios-adapter
-  ```terminal
-    >|npm i uniapp-axios-adapter
-  ```
+    ```terminal
+      >|npm i uniapp-axios-adapter
+    ```
   - 修改 axios.js
-  ```terminal
-    import { UniAdapter } from "uniapp-axios-adapter";
-    const service = axios.create({
-      baseURL: "http://localhost:8090",
-      timeout: 100000, // Request timeout
-      adapter: UniAdapter,
-    });
-  ```
+    ```javascript
+        import { UniAdapter } from "uniapp-axios-adapter";
+        const service = axios.create({
+          baseURL: "http://localhost:8090",
+          timeout: 100000, // Request timeout
+          adapter: UniAdapter,
+        });
+    ```

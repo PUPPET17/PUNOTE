@@ -2,7 +2,7 @@
 
 ## 部署Springboot应用（Dockerfile）
 - 编写 Dockerfile
-```terminal
+```Dockerfile
 |# 使用官方 OpenJDK 作为基础镜像 
 |# FROM openjdk:8-jdk-alpine
 |FROM openjdk:17-jdk-alpine
@@ -93,7 +93,7 @@
 
 使用docker compose启停服务
   - 编辑docker-compose.yml
-  ```terminal
+  ```yaml
   version: '3'
   services:
     minio:
