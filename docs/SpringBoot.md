@@ -39,6 +39,23 @@
           </configuration>
     </plugin>
   ```
+- maven 打包排除目录
+  ```xml
+    <build>
+      <plugins>
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-jar-plugin</artifactId>
+              <version>3.2.0</version>
+              <configuration>
+                  <excludes>
+                      <exclude>要排除的目录/**</exclude>
+                  </excludes>
+              </configuration>
+          </plugin>
+      </plugins>
+    </build>
+  ```
 
 #### 依赖重复导入导致冲突
 - 使用 `mvn dependency:tree` 命令来查看依赖树
@@ -73,6 +90,7 @@
         </dependencies>
     </dependencyManagement>
   ```
+
 #### 分布式ID
  ##### 雪花算法
 
@@ -157,5 +175,49 @@
       public synchronized long nextId() {
           return snowflake.nextId();
       }
+  }
+  ```
+
+#### 连接多个Redis
+  - 可以写多个Redis配置类，在 redisTemplate 的 @Bean 注解上加上name属性，然后通过 @Qualifier 注解来指定使用哪个配置类。
+  ```java
+  @Configuration
+  public class RedisConfig {
+    
+    @Value("${spring.redis.host}")
+    private String host;
+    
+    @Value("${spring.redis.port}")
+    private int port;
+    
+    @Value("${spring.redis.password}")
+    private String password;
+    
+    @Primary
+    @Bean
+    public RedisConnectionFactory redisConnectionFactoryDb2() {
+        RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
+        configuration.setHostName(host);
+        configuration.setPort(port);
+        configuration.setPassword(password);
+        configuration.setDatabase(2);
+        
+        return new LettuceConnectionFactory(configuration);
+    }
+    
+    
+    @Bean(name = "redisTemplateDb2")
+    public RedisTemplate<String, Object> redisTemplateDb2() {
+        RedisTemplate<String, Object> template = new RedisTemplate<>();
+        template.setConnectionFactory(redisConnectionFactoryDb2());
+        StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
+        template.setKeySerializer(stringRedisSerializer);
+        template.setValueSerializer(stringRedisSerializer);
+        template.setHashKeySerializer(stringRedisSerializer);
+        template.setHashValueSerializer(stringRedisSerializer);
+        
+        template.afterPropertiesSet();
+        return template;
+    }
   }
   ```
