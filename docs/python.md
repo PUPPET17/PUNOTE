@@ -180,14 +180,26 @@ convert_dataset(xml_folder, output_folder)
 
 ## pip 使用镜像下载
 - 清华源
-```python
+```shell
 pip install <package_name> -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
 - 阿里源
-```python
+```shell
 pip install <package_name> -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
 - 中科大
-```python
+```shell
 pip install <package_name> -i https://pypi.mirrors.ustc.edu.cn/simple/
+```
+
+## pip freeze 
+- 查看已安装包和版本：
+```shell
+pip freeze
+```
+2. 将安装包信息保存到文件：
+
+你可以将输出的包和版本信息保存到一个文件（通常是 requirements.txt），这样方便以后重新安装这些包：
+```shell
+pip freeze > requirements.txt
 ```
