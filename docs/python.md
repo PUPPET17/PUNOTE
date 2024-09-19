@@ -180,14 +180,24 @@ convert_dataset(xml_folder, output_folder)
 
 ## pip 使用镜像下载
 - 清华源
-```python
-    >|pip install <package_name> -i https://pypi.tuna.tsinghua.edu.cn/simple
-```
+    ```shell
+    pip install <package_name> -i https://pypi.tuna.tsinghua.edu.cn/simple
+    ```
 - 阿里源
-```python
-    >|pip install <package_name> -i https://pypi.tuna.tsinghua.edu.cn/simple
-```
+    ```shell
+    pip install <package_name> -i https://pypi.tuna.tsinghua.edu.cn/simple
+    ```
 - 中科大
-```python
-    >|pip install <package_name> -i https://pypi.mirrors.ustc.edu.cn/simple/
-```
+    ```shell
+    pip install <package_name> -i https://pypi.mirrors.ustc.edu.cn/simple/
+    ```
+
+## pip freeze 
+- 查看已安装包和版本：
+    ```shell
+    pip freeze
+    ```
+2. 将安装包信息保存到文件：
+    ```shell
+    pip freeze > requirements.txt
+    ```
