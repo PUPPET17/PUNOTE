@@ -124,12 +124,18 @@ ENTRYPOINT ["java", "-jar", "/app.jar"]
   - 查看 Docker Compose 服务的日志。
 
 ## 镜像管理
+- `docker save -o name.tar name:tag`
+  - 将 Docker 镜像打包成 .tar 文件
+
+- `docker load -i name.tar`
+  - load tar 格式的镜像
+
 - `docker pull <image`
   - 从 Docker Hub 或指定仓库下载镜像。例如：
     ```terminal
     docker pull ubuntu
     ```
-- `docker build -t <name:<tag <path`
+- `docker build -t name:tag path`
   - 从 Dockerfile 构建镜像。例如：
     ```terminal
     docker build -t my-image:latest .
@@ -165,12 +171,12 @@ ENTRYPOINT ["java", "-jar", "/app.jar"]
   - 删除容器
 
 ## 容器操作
-- `docker exec -it <container <command`
+- `docker exec -it container command`
   - 在运行中的容器中执行命令。例如：
     ```terminal
     docker exec -it my-container bash
     ```
-- `docker logs <container`
+- `docker logs container`
   - 查看容器的日志。例如：
     ```terminal
     docker logs my-container
